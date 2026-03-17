@@ -1,5 +1,5 @@
 // Example 3 – Variable & list monitors
-#import "../lib.typ": blockst, scratch
+#import "@preview/blockst:0.1.0": blockst, scratch
 
 #set page(width: auto, height: auto, margin: 3mm, fill: white)
 

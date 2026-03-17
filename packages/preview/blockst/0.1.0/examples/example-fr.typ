@@ -1,4 +1,4 @@
-#import "../lib.typ": blockst, scratch
+#import "@preview/blockst:0.1.0": blockst, scratch
 
 #set page(height: auto, width: auto, margin: 1cm)
 #set text(font: "Helvetica Neue", lang: "fr")
