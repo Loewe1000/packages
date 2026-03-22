@@ -31,6 +31,12 @@ It is made for worksheets, tutorials, teaching material, and visual programming 
 
 ![Quick Start example](examples/example-quickstart.png)
 
+> **Font requirement:** Blockst uses **Helvetica Neue** (the same font Scratch itself uses).
+> This font is pre-installed on macOS. On Linux and Windows you need to install it manually,
+> or provide a compatible substitute (e.g. *Nimbus Sans* on Linux).
+> Without the font, Typst will fall back to a system default and the blocks will look different.
+> You can override the font globally with `set-blockst(font: "…")` — see [Custom Font example](#custom-font-set-blockst) below.
+
 ## Examples
 
 ### Events and Control Flow
@@ -253,6 +259,35 @@ Available themes: `"normal"` (default) and `"high-contrast"`.
 ```
 
 ![Normal vs. high-contrast theme example](examples/example-theme.png)
+
+### Custom Font (`set-blockst`) {#custom-font-set-blockst}
+
+<details>
+<summary><strong>Example: Comic Sans MS</strong></summary>
+
+```typst
+#import "@preview/blockst:0.1.0": blockst, scratch, set-blockst
+
+#set page(width: auto, height: auto, margin: 3mm, fill: white)
+
+#set-blockst(font: "Comic Sans MS")
+
+#blockst[
+  #import scratch.en: *
+
+  #when-flag-clicked[
+    #say-for-secs("Look, Ma — Comic Sans!", secs: 2)
+    #repeat(times: 3)[
+      #move(steps: 10)
+      #turn-right(degrees: 120)
+    ]
+  ]
+]
+```
+
+![Custom font (Comic Sans) example](examples/example-font.png)
+
+</details>
 
 ### German Localization
 

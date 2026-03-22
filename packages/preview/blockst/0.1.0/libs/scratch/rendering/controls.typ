@@ -1,7 +1,7 @@
 // rendering/controls.typ — Control structures (loops, conditionals)
 // Contains repeat, repeat-until, forever, if-then-else blocks.
 
-#import "colors.typ": scratch-block-options, get-colors-from-options, get-stroke-from-options
+#import "colors.typ": scratch-block-options, get-colors-from-options, get-stroke-from-options, get-font-from-options
 #import "icons.typ": icons
 #import "geometry.typ": block-height, block-offset-y, corner-radius, content-inset, notch-spacing, block-path
 #import "pills.typ": number-or-content
@@ -27,12 +27,13 @@
   let options = scratch-block-options.get()
   let colors = get-colors-from-options(options)
   let stroke-thickness = get-stroke-from-options(options)
+  let font-family = get-font-from-options(options)
 
   block(
     above: 0em,
     below: 0mm,
   )[
-    #set text(font: "Helvetica Neue", colors.text-color, weight: 500)
+    #set text(font: font-family, colors.text-color, weight: 500)
 
     #let first-body = if first-body not in (none, []) {
       first-body

@@ -1,0 +1,18 @@
+// Example: Custom font via set-blockst(font: "…")
+#import "../lib.typ": blockst, set-blockst
+
+#set page(width: auto, height: auto, margin: 3mm, fill: white)
+
+#set-blockst(font: "Comic Sans MS")
+
+#blockst[
+  #import "../libs/scratch/lang/en.typ": *
+
+  #when-flag-clicked[
+    #say-for-secs("Look, Ma — Comic Sans!", secs: 2)
+    #repeat(times: 3)[
+      #move(steps: 10)
+      #turn-right(degrees: 120)
+    ]
+  ]
+]

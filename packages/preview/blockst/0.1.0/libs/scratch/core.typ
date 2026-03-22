@@ -35,7 +35,7 @@
   let stroke-thickness = get-stroke-from-options(scratch-block-options.get())
   
   // Dropdown-Felder (typischerweise Strings in Rechteck-Pills)
-  let dropdown-keys = ("to", "scene", "costume", "backdrop", "effect", "sound", "key", "object", "property", "timeunit", "layer", "direction", "variable", "list", "clone", "option", "mode", "style", "element", "operator", "message", "towards", "param")
+  let dropdown-keys = ("to", "scene", "costume", "backdrop", "effect", "sound", "key", "object", "property", "timeunit", "layer", "direction", "variable", "list", "clone", "option", "mode", "style", "element", "operator", "towards", "param")
   
   // Condition fields (for boolean operators: and, or, not, and direct condition slots)
   let condition-keys = ("operand", "operand1", "operand2", "condition")
