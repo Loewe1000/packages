@@ -1,5 +1,5 @@
 // Example: Custom font via set-blockst(font: "…")
-#import "../lib.typ": blockst, set-blockst
+#import "@preview/blockst:0.1.0": blockst, set-blockst
 
 #set page(width: auto, height: auto, margin: 3mm, fill: white)
 
