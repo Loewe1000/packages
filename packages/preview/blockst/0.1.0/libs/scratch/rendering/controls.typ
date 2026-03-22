@@ -7,6 +7,9 @@
 #import "pills.typ": number-or-content
 #import "blocks.typ": condition
 
+// Alias to avoid shadowing by function parameters named `condition`
+#let _condition-fn = condition
+
 // ------------------------------------------------
 // Common helper for loop and conditional blocks
 // ------------------------------------------------
@@ -133,7 +136,7 @@
   let options = scratch-block-options.get()
   let colors = get-colors-from-options(options)
   conditional-block(
-    [#stack(dir: ltr, spacing: 1.5mm, labels.at("repeat-until"), if condition != [] { condition } else { condition(colorschema: colors.control, []) })],
+    [#stack(dir: ltr, spacing: 1.5mm, labels.at("repeat-until"), if condition != [] { condition } else { _condition-fn(colorschema: colors.control, []) })],
     first-body: body,
   )
 }
@@ -161,7 +164,7 @@
   let options = scratch-block-options.get()
   let colors = get-colors-from-options(options)
   conditional-block(
-    [#stack(dir: ltr, spacing: 1.5mm, labels.at("if-then"), if condition != [] { condition } else { condition(colorschema: colors.control, []) }, labels.then)],
+    [#stack(dir: ltr, spacing: 1.5mm, labels.at("if-then"), if condition != [] { condition } else { _condition-fn(colorschema: colors.control, []) }, labels.then)],
     first-body: then,
     middle-label: if else-body != none { [#stack(dir: ltr, spacing: 1.5mm, labels.at("else"))] } else { none },
     second-body: else-body,

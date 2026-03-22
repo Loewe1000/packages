@@ -12,8 +12,8 @@
       #move(steps: 10)
       #if-then-else(
         touching-object("edge"),
-        [#turn-right(degrees: 180)],
-        [#change-variable-by("Score", 1)],
+        turn-right(degrees: 180),
+        change-variable-by("Score", 1),
       )
     ]
     #say-for-secs(custom-input("Score"), secs: 2)
