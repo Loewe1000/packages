@@ -6,7 +6,7 @@
 #set-blockst(font: "Comic Sans MS")
 
 #blockst[
-  #import "../libs/scratch/lang/en.typ": *
+  #import scratch.en: *
 
   #when-flag-clicked[
     #say-for-secs("Look, Ma — Comic Sans!", secs: 2)
