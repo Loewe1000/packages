@@ -196,7 +196,6 @@
   let options = scratch-block-options.get()
   let colors = get-colors-from-options(options)
   let stroke-thickness = get-stroke-from-options(options)
-  let font-family = get-font-from-options(options)
   
   // Hole Block-Info aus Registry
   let info = get-block-info(id)
@@ -228,18 +227,18 @@
     let tmpl-then = get-template("control.then", l)
     let tmpl-else = get-template("control.else", l)
     let lbl = ("if-then": tmpl-if, then: tmpl-then, "else": tmpl-else)
-    return if-then-else(cond, then: body, else-body: if id == "control.if_else" { else-body } else { none }, labels: lbl, colors: colors, stroke-thickness: stroke-thickness, font-family: font-family)
+    return if-then-else(cond, then: body, else-body: if id == "control.if_else" { else-body } else { none }, labels: lbl)
   } else if id == "control.repeat" {
     let times = if "times" in args { args.times } else { 10 }
     let lbl = (repeat: get-template("control.repeat_label", l), times: get-template("control.times_label", l))
-    return repeat(count: times, body: body, labels: lbl, colors: colors, stroke-thickness: stroke-thickness, font-family: font-family)
+    return repeat(count: times, body: body, labels: lbl)
   } else if id == "control.forever" {
     let lbl = (forever: get-template("control.forever_label", l))
-    return repeat-forever(body, labels: lbl, colors: colors, stroke-thickness: stroke-thickness, font-family: font-family)
+    return repeat-forever(body, labels: lbl)
   } else if id == "control.repeat_until" {
     let cond = if "condition" in args { args.condition } else { condition(colorschema: colors.operators, []) }
     let lbl = ("repeat-until": get-template("control.repeat_until_label", l))
-    return repeat-until(cond, body: body, labels: lbl, colors: colors, stroke-thickness: stroke-thickness, font-family: font-family)
+    return repeat-until(cond, body: body, labels: lbl)
   } else if id == "control.start_as_clone" {
     let lbl = get-template("control.start_as_clone", l)
     return when-i-start-as-clone(body, label: lbl)
