@@ -8,6 +8,50 @@ All notable changes to this package are recorded here. The format follows
 
 ### Added
 
+- **A footnote's note is revealed with its marker.** A footnote standing inside
+  a reveal chain now has its note appear on the same step in the browser, so the
+  foot of the slide gives nothing away that the talk has not shown yet. Its
+  place is held from the start, so nothing jumps when it arrives. On paper it
+  stands from the slide's first step, as before. The step is not carried
+  anywhere: `track` lays two reads of `counter(footnote)` around its own body
+  and reports the *span* of numbers that fall between them; the overlay takes,
+  for each note, the narrowest span containing its number, so a footnote inside
+  an `anim` inside a `stagger` gets the step of the `anim`. A footnote in no
+  chain finds no span and stands from step one. In the browser the note is no
+  longer drawn in the background at all: the background punches a slot the size
+  of the line, holding the place and carrying the marker, and the ink comes from
+  the overlay. There is therefore exactly one place that draws note ink, and
+  nothing that could double. Five earlier attempts of mine all broke the same
+  rule, measured: as soon as a value read from the running slide lands in a
+  sprite record, the document stops converging -- provided another slide
+  follows. A known limit comes with it: block content with an alignment of its
+  own inside a note -- a displayed equation, a `figure`, an `#align(center)` --
+  reaches both outputs but not the same place, centred in the browser and at the
+  start of the line on paper.
+
+- **`#footnote` works on a slide.** It is written as it always was and stands
+  at the foot of *its slide*, under a short rule, numbered from one on every
+  slide. Reported from a deck where it had squeezed itself into the bottom and
+  pushed the content onto a new slide. Typst's own footnote machinery cannot
+  work here and is switched off for a deck: it puts its entries at the foot of
+  the *text area*, and a slide is a block of exactly page height that leaves
+  nothing there. Measured on three slides with one footnote: four pages instead
+  of three, the note alone on a page *before* the slide that names it, and in
+  the browser on no slide at all. The deck sets the note itself now, in all
+  three outputs -- browser, PDF and the handout beside its slide -- and it finds
+  footnotes inside the reveal chains too. That last point cost the first
+  attempt: a walk through the slide body before it is laid out finds a footnote
+  only where it is written, and `stagger` returns a `context`, into which no
+  walk can see -- of two footnotes in a `stagger` it found none while both
+  markers stood in the type. The notes are therefore asked for by query,
+  filtered by slide *and* page: by slide alone they stood three times over
+  under `pages: "step"`, by page alone a handout sheet would carry the notes of
+  every slide on it. Two new labels, `ts-slide-notes` and `ts-slide-notes-rule`.
+  A footnote in a slide *title* now stops the compilation and says why: the
+  title is repeated as a running head, in the contents and in the speaker view,
+  and every repetition set the footnote again -- the slides after it carried
+  the note of their section title instead of their own.
+
 - **Decks that read from the right.** `#set text(lang: "fa")` before the show
   rule, or `#set text(dir: rtl)`, turns the whole slide around. The slide body
   was placed with `place(top + left, …)`, and that alignment beat the `start`
@@ -107,6 +151,28 @@ All notable changes to this package are recorded here. The format follows
   types the name itself; one that inlines them, the default, notices nothing.
 
 ### Fixed
+
+- **A footnote inside a reveal chain carried the wrong number in the browser.**
+  The body of a tracked element is laid out twice there -- hidden in the
+  background and again as its sprite in the overlay, which is the copy the
+  viewer sees -- and `counter(footnote)` advanced in both. Measured on three
+  footnotes, two of them inside a `stagger`: the markers read 1, 4, 5 while the
+  notes beneath them read 1, 2, 3. On paper there are no sprites and the
+  numbering was right. The sprite now carries the *place* at which its body
+  begins in the background, and sets the counter from it before laying the body
+  out again. A place and not a number, and that is the whole difference: a
+  recorded counter value would be read back out of the state that the overlay
+  then writes the same counter from -- a circle that gains a link per nesting
+  level, measured as "value of counter(footnote) did not converge". A place
+  follows the structure of the document and stands from the first run.
+
+- **A footnote inside a reveal chain was noted twice.** The body of a tracked
+  element is laid out a second time in the browser, as its sprite in the
+  overlay, and the note at the foot of the slide was taken from both copies:
+  measured, five notes for three footnotes, the two inside a `stagger` twice
+  over. On paper there are no sprites and it did not show. The slide now leaves
+  the sprite copies out. The numbering of the markers themselves is a separate
+  matter and still wrong in the browser for a footnote inside a reveal.
 
 - **An embedded frame was scaled twice in WebKit.** `embed` spans its frame in
   slide points and scales it onto the stage, so that every window shows the

@@ -1,8 +1,50 @@
 // Turning tracked elements into HTML.
 
 #import "config.typ": *
-#import "internal.typ": sprite-number
-#import "theme.typ": with-style
+#import "internal.typ": (folien-notizen, notiz-marke-ab, notiz-selektoren,
+                        sprite-number)
+#import "theme.typ": notiz-zeile, with-style
+
+/// Die Anmerkungen einer Folie als Sprites.
+///
+/// Der Gegenpart zu den Schlitzen, die `slide-body` im Hintergrund stanzt:
+/// dieselbe Abfrage, dieselbe Reihenfolge, dieselbe Zeilenfunktion. Der
+/// Hintergrund hält den Platz und trägt die unsichtbare Marke, hier steht die
+/// Tinte -- und weil `data-n` und Marke zusammenfinden, setzt die Laufzeit den
+/// Sprite punktgenau in die Zeile, die für ihn freigehalten wurde.
+///
+/// Es gibt damit nur noch *eine* Quelle für Anmerkungen. Eine ungekettete
+/// Fußnote und eine gekettete unterscheiden sich allein in einer Zeichenkette,
+/// dem `data-at`: `"1-"` gegen `"3-"`. Doppelt kann nichts kommen, weil der
+/// Hintergrund keine Anmerkungstinte mehr trägt; verloren gehen kann auch
+/// nichts, weil ein fehlender Schritt auf `"1-"` zurückfällt.
+///
+/// Muss in einem `context` stehen.
+#let notiz-sprites(nr, t, geo) = {
+  let m = margins(geo)
+  let inner = geo.width - m.left - m.right
+  let fn = folien-notizen(nr)
+  if fn.len() == 0 { return [] }
+  let schritte = notiz-selektoren(nr)
+  fn.enumerate().map(((i, f)) => {
+    let s = schritte.at(i, default: (at: "1-", delay: 0, after: none))
+    let zahl = counter(footnote).at(f.location()).first()
+    html.elem("div", attrs: (
+      class: "ts-el ts-note",
+      "data-n": str(notiz-marke-ab + i),
+      "data-at": s.at,
+      // Eine Anmerkung blendet auf und wandert nicht: sie steht am Fuß der
+      // Folie, wo ein Weg von vierzehn Punkten nur unruhig aussähe. Die
+      // Verzögerung kommt dagegen mit, damit die Anmerkung eines gestaffelten
+      // Punktes im selben Takt kommt wie der Punkt.
+      "data-enter": "fade",
+      ..if s.at("delay", default: 0) != 0 { ("data-delay": str(s.delay)) } else { (:) },
+      // Nur die Abweichung von der Vorgabe reist mit, wie bei jedem Sprite:
+      // ein Deck ohne `dim` sieht danach aus wie eines von gestern.
+      ..if s.at("after", default: none) != none { ("data-after": s.after) } else { (:) },
+    ), html.frame(block(width: inner, notiz-zeile(t, geo.scale, zahl, f.body))))
+  }).join()
+}
 
 /// One sprite: the element as its own small frame, plus everything the runtime
 /// needs to know about it as data attributes.
@@ -66,6 +108,18 @@
       // one. Only the number travels; the step itself is looked up from
       // `sprites`, for the reason given at `sprite-number`.
       sprite-number.update(n)
+      // Und der Fußnotenzähler auf den Stand, den er im Hintergrund an der
+      // Stelle dieses Rumpfes hatte. Ohne das zählt der zweite Satz weiter,
+      // und im Browser ist die sichtbare Marke die von hier: gemessen las ein
+      // Deck mit drei Fußnoten, zwei davon in einem `stagger`, die Marken
+      // 1, 4, 5 und die Anmerkungen darunter 1, 2, 3.
+      //
+      // Abgelesen wird am mitgereisten *Ort*, nicht an einer mitgereisten
+      // Zahl -- siehe den Kommentar bei `fnort` in `track`.
+      context {
+        let o = s.at("fnort", default: none)
+        if o != none { counter(footnote).update(counter(footnote).at(o).first()) }
+      }
       // The measured size on the outside, since that decides the frame, and
       // the region from back then on the inside. A relative measure in the body
       // therefore resolves exactly once, and against the same reference as in
